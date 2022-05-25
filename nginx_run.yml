@@ -1,0 +1,7 @@
+
+---
+- name: Install nginx balancier server
+  hosts: balancier_server
+
+  roles:
+    - nginx_setup

@@ -1,0 +1,18 @@
+---
+  hosts: balancier_server
+  tasks:
+  - name: Swarm manager init
+    ansible.builtin.import_role:
+      name: swarm_manager_init
+
+  - name: Swarm network init
+    ansible.builtin.import_role:
+      name: swarm_network_init
+
+  hosts: flask_server
+  tasks:
+    - name: Join flask containers into swarm
+      ansible.builtin.import_role:  
+        name: swarm_node_join
+      loop: "{{ range(flask_instances)|list }}"     
+

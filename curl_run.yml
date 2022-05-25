@@ -1,0 +1,10 @@
+---
+- name: Curl web apps
+  hosts: curlhost
+  
+  tasks:
+
+  - name: Test connection by uri module
+    ansible.builtin.uri: 
+      url: "http://{{ web_host }}:500{{ item }}"
+    loop: "{{ range(web_instances) | list }}"

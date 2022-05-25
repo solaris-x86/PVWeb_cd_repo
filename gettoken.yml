@@ -1,0 +1,14 @@
+---
+- hosts: balancier_server
+  tasks:
+  - name: Get token
+    ansible.builtin.shell: 
+      cmd: docker swarm join-token -q worker
+    register: gettoken
+
+  - debug: msg="{{ gettoken.stdout }}"
+
+  - name: Register dummy host with variable
+    ansible.builtin.add_host:
+      name: "DUMMY_HOST"
+      swarm_token: "{{ gettoken.stdout }}"

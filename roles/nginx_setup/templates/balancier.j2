@@ -1,0 +1,5 @@
+upstream balancier {
+{% for cnt in range(web_instances) %}
+    server {{ web_host }}:500{{ cnt }};
+{% endfor %}
+}

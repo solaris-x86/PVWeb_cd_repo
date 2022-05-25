@@ -1,0 +1,83 @@
+---
+# tasks file for nginx_setup
+
+#- name: Install Docker from role
+#  ansible.builtin.import_role:
+#    name: docker_setup
+
+#- name: Swarm manager init
+#  ansible.builtin.import_role:
+#    name: swarm_manager_init
+
+#- name: Swarm network init
+#  ansible.builtin.import_role:
+#    name: swarm_network_init
+
+- name: Create config directory
+  ansible.builtin.shell:
+    cmd: "if [ ! -e /home/{{ ansible_user }}/nginx_conf.d ]; then mkdir /home/{{ ansible_user }}/nginx_conf.d; fi"
+
+- name: Install nginx on Docker container
+  community.docker.docker_container:  
+    name: nginx
+    image:  nginx
+    state:  started 
+    ports: "80:80"
+    hostname: balancier
+    networks: 
+      - name: "{{ swarm_network_name }}"
+    volumes:
+      - /home/{{ ansible_user }}/nginx_conf.d:/etc/nginx/conf.d/
+    detach: true     
+  become: yes
+
+- name: Copy Nginx balancier config to host
+  ansible.builtin.template:
+    src: "balancier.j2"
+    dest: "/home/{{ ansible_user }}/nginx_conf.d/balancier.conf"
+  notify: Restart Nginx
+
+- name: Copy Nginx default config to host
+  ansible.builtin.copy:
+    src: "default.conf"
+    dest: "/home/{{ ansible_user }}/nginx_conf.d/default.conf"
+  notify: Restart Nginx
+
+#- name: Copy Nginx config to container
+#  ansible.builtin.shell: |
+#    docker cp /home/{{ ansible_user }}/*.conf nginx:/etc/nginx/conf.d/
+#    docker commit nginx
+#    docker stop nginx
+#    docker start nginx
+  
+#- name: Create Site root directory
+#  ansible.builtin.file:
+#    path: "{{ root_dir }}/{{ domain_name }}"
+#    state: directory
+#    owner: nginx
+#    group: nginx
+#    setype: httpd_sys_content_t
+#  become: yes
+
+#- name: Copy Nginx config 
+#  ansible.builtin.copy:
+#    src: "balancier.conf"
+#    dest: /etc/nginx/conf.d/
+#  notify: Reload Nginx
+#  become: yes
+
+#- name: Start Nginx server 
+#  ansible.builtin.systemd:
+#    name: nginx
+#    state: started
+#    enabled: yes
+#  become: yes
+
+#- name: Curl Nginx page
+#  ansible.builtin.uri:
+#    url: 
+#    return_content: yes
+#  register: http_answer
+
+#- debug:
+#    var: http_answer.content

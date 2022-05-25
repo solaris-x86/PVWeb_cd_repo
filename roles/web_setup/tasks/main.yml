@@ -1,0 +1,21 @@
+---
+# tasks file for web_setup
+
+- name: Install web instancies
+  community.docker.docker_container:  
+    name: "web{{ item }}"
+    image:  "{{ web_image }}"
+    state:  started 
+    ports: "500{{ item }}:5000"
+    hostname: "web{{ item }}"
+    network_mode: "{{ swarm_network_name }}"
+    detach: true
+  loop: "{{ range(web_instances)|list }}"     
+  become: yes
+
+#- name: Create web instancies
+#  ansible.builtin.shell: |
+#    docker run -d --name web{{ item }} --hostname web{{ item }} --network {{ swarm_network_name }} -p 500{{ item }}:5000 {{ web_image }}
+#  loop: "{{ range(web_instances)|list }}"
+#  become: yes
+

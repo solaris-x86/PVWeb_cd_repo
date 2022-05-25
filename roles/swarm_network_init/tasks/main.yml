@@ -1,0 +1,12 @@
+---
+# tasks file for swarm_network_create
+
+- name: Create a network
+  community.docker.docker_network:
+    name: "{{ swarm_network_name }}"
+    driver: overlay
+    ipam_config:
+      - subnet: "{{ swarm_network_addr }}"
+    attachable: yes
+    state: present
+

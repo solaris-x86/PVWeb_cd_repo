@@ -1,0 +1,54 @@
+pipeline {
+    agent {
+        label 'Ansible_agent'
+    }
+    
+    options {
+        timestamps()
+    }
+    
+    environment {
+        inventory_file = "hosts.inv"
+        balancier_server = "192.168.200.106"
+    }
+    
+    stages {
+        stage('Install roles')  {
+            steps {
+              sh 'ansible-galaxy install --roles-path roles --role-file requirements.yml'
+            }
+        }
+        stage('Exec flask playbook') {
+            steps {
+              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "flask_run.yml")
+            }
+        }
+        stage('Exec balancier playbook') {
+            steps {
+              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "nginx_run.yml")
+            }
+        }
+        stage('Pause') {
+            steps {
+              sleep time: 5, unit: 'SECONDS'
+            }
+        }
+        stage('Test balancier server') {
+            steps { script {
+              try {
+                def response = httpRequest "http://" + balancier_server +":80"
+                println('Status: '+response.status)
+                return (response.status == 200)
+              }
+              catch (exception) {
+                currentBuild.result = 'FAILURE'
+              }
+            } }
+        }
+        stage('Test web apps') {
+            steps {
+              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "curl_run.yml")
+            }
+        }
+    }
+}

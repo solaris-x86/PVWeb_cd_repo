@@ -1,0 +1,22 @@
+curlhost ansible_host=127.0.0.1 
+
+[balancier_hosts]
+balancier_server ansible_host=192.168.200.106 
+
+[web_hosts]
+web_server ansible_host=192.168.200.104 
+
+[exam2_hosts:children]
+web_hosts
+balancier_hosts
+
+[all:vars]
+web_image="solaris86x/pvweb:latest"
+web_instances=6
+web_host="192.168.200.104"
+ansible_ssh_private_key_file=/home/solaris/EPAM/Exam2/agent_key
+ansible_user=exam2
+swarm_token=""
+swarm_mgr_host="192.168.200.106"
+swarm_network_name="webnet"
+swarm_network_addr="169.0.0.0/24"

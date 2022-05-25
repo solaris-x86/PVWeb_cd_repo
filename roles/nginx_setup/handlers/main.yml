@@ -1,0 +1,9 @@
+---
+# handlers file for nginx_setup
+
+- name: Restart Nginx
+  community.docker.docker_container:  
+    name: nginx
+    state:  started 
+    restart: yes
+  become: yes

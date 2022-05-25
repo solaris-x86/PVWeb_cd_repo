@@ -1,0 +1,5 @@
+---
+  - import_playbook: nginx_run.yml
+  - import_playbook: gettoken.yml
+  - import_playbook: web_run.yml
+  - import_playbook: curl_run.yml

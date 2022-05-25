@@ -1,0 +1,29 @@
+---
+# tasks file for docker_setup
+
+- name: Install packages
+  ansible.builtin.apt:
+    name: 
+      - docker
+      - docker-clean
+      - docker-compose
+      - docker.io
+    state: present
+  become: yes
+
+- name: reset ssh connection to allow changes to affect ansible user
+  ansible.builtin.meta:
+    reset_connection
+
+- name: Include user to the docker group
+  ansible.builtin.shell:
+    cmd: "usermod -aG docker {{ ansible_user }}"
+  become: yes
+
+- name: Start docker 
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: yes
+  become: yes
+

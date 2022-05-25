@@ -1,0 +1,19 @@
+---
+# tasks file for swarm_manager_init
+
+- name: Retrieve swarm status
+  ansible.builtin.shell: 
+    cmd: docker info 2>null | grep "Swarm:" | sed 's/^[[:space:]]//g' | cut -d ' ' -f2
+  register: swarm_status
+
+- name: Create manager
+  community.docker.docker_swarm:
+    state: present
+  when: "'active' not in swarm_status.stdout_lines"
+  become: yes
+
+- name: Get token
+  ansible.builtin.shell: 
+    cmd: docker swarm join-token -q worker
+  register: swarm_token
+
