@@ -14,7 +14,7 @@ balancier_hosts
 web_image="solaris86x/pvweb:latest"
 web_instances=6
 web_host="192.168.200.104"
-ansible_ssh_private_key_file=/home/solaris/EPAM/Exam2/agent_key
+#ansible_ssh_private_key_file=/home/solaris/agent_key
 ansible_user=exam2
 swarm_token=""
 swarm_mgr_host="192.168.200.106"
