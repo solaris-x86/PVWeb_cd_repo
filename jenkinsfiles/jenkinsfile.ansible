@@ -13,14 +13,9 @@ pipeline {
     }
     
     stages {
-        stage('Install roles')  {
+        stage('Exec web playbook') {
             steps {
-              sh 'ansible-galaxy install --roles-path roles --role-file requirements.yml'
-            }
-        }
-        stage('Exec flask playbook') {
-            steps {
-              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "flask_run.yml")
+              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "web_run.yml")
             }
         }
         stage('Exec balancier playbook') {
