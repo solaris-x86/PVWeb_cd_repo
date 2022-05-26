@@ -13,14 +13,14 @@ pipeline {
     }
     
     stages {
-        stage('Exec web playbook') {
-            steps {
-              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "web_run.yml")
-            }
-        }
         stage('Exec balancier playbook') {
             steps {
               ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "nginx_run.yml")
+            }
+        }
+        stage('Exec web playbook') {
+            steps {
+              ansiblePlaybook(credentialsId: 'ansible_agent_key', inventory: inventory_file, playbook: "web_run.yml")
             }
         }
         stage('Pause') {

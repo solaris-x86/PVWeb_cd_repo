@@ -1,5 +1,4 @@
 ---
-  - import_playbook: nginx_run.yml
-  - import_playbook: gettoken.yml
-  - import_playbook: web_run.yml
-  - import_playbook: curl_run.yml
+  - ansible.builtin.import_playbook: nginx_run.yml
+  - ansible.builtin.import_playbook: web_run.yml
+  - ansible.builtin.import_playbook: curl_run.yml

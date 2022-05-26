@@ -1,5 +1,7 @@
 
 ---
+- ansible.builtin.import_playbook: gettoken.yml
+
 - name: Install and start web
   hosts: web_server
 
