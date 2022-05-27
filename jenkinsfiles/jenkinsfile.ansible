@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Pause') {
             steps {
-              sleep time: 5, unit: 'SECONDS'
+              sleep time: 10, unit: 'SECONDS'
             }
         }
         stage('Test balancier server') {
