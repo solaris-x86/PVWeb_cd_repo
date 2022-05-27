@@ -11,7 +11,7 @@ web_hosts
 balancier_hosts
 
 [all:vars]
-web_image="solaris86x/pvweb:latest"
+web_image="solaris86x/webtest:latest"
 web_instances=6
 web_host="192.168.200.104"
 #ansible_ssh_private_key_file=/home/solaris/agent_key
